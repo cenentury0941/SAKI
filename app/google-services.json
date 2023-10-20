@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "547956355528",
+    "project_id": "home-automation-jetpack",
+    "storage_bucket": "home-automation-jetpack.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:547956355528:android:f89a75514db53f9f52d0fd",
+        "android_client_info": {
+          "package_name": "com.example.saki"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwa6ZdUdULZA7ENOwl5d9wKKU4VVmyi54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
