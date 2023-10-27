@@ -20,15 +20,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.saki.ui.pages.CreateDeviceDefinitionPage
+import com.example.saki.ui.pages.CreateDevicePage
 import com.example.saki.ui.pages.DashboardPage
+import com.example.saki.ui.pages.DeviceStateModificationPage
+import com.example.saki.ui.pages.ItemCreationPage
 import com.example.saki.ui.pages.LandingPage
 import com.example.saki.ui.theme.SAKITheme
+import com.example.saki.ui.viewmodels.FirebaseViewModel
 import com.example.saki.ui.viewmodels.GoogleUserViewModel
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.auth
 import com.google.firebase.auth.internal.IdTokenListener
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -40,6 +44,7 @@ class MainActivity : ComponentActivity() {
     lateinit var signInRequest: BeginSignInRequest
     private val REQ_ONE_TAP = 420
     val googleUserViewModel by viewModels<GoogleUserViewModel>()
+    val firebaseViewModel by viewModels<FirebaseViewModel>()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -61,6 +66,8 @@ class MainActivity : ComponentActivity() {
                             Log.d("ABC", "Token = " + idToken.toString())
                             Log.d("ABC", "Token Class = " + idToken)
                             googleUserViewModel.updateUserData(credential)
+                            firebaseViewModel.credentials = credential
+                            firebaseViewModel.updateRefs()
                             navController.navigate("dashboard")
                         }
                         else -> {
@@ -79,15 +86,14 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val idTokenListener: IdTokenListener = IdTokenListener {
             Log.d("ABC", "Token Change : " + it.token)
             if( it.token != null )
             {
-
             }
             else
             {
+                firebaseViewModel.credentials = null
                 navController.popBackStack(navController.graph.startDestinationId, false)
             }
         }
@@ -105,7 +111,11 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController = navController as NavHostController, startDestination = "landing") {
                         composable("landing") { LandingPage(navController as NavHostController, ::beginSignIn) }
-                        composable("dashboard") { DashboardPage(googleUserViewModel) }
+                        composable("dashboard") { DashboardPage(googleUserViewModel,navController as NavHostController, firebaseViewModel) }
+                        composable("createitem") { ItemCreationPage(navController as NavHostController) }
+                        composable("createdevicedefinition") { CreateDeviceDefinitionPage(navController as NavHostController, firebaseViewModel) }
+                        composable("createdevice") { CreateDevicePage(navController as NavHostController, firebaseViewModel) }
+                        composable("devicestate") { DeviceStateModificationPage(navController as NavHostController, firebaseViewModel) }
                     }
 
                 }

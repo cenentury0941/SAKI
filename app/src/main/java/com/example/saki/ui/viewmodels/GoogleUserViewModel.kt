@@ -1,17 +1,18 @@
 package com.example.saki.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.saki.domain.models.GoogleUser
+import com.example.saki.domain.models.GoogleUserDataModel
 import com.google.android.gms.auth.api.identity.SignInCredential
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class GoogleUserViewModel: ViewModel() {
-    private val userData = MutableStateFlow(GoogleUser())
+    private val userData = MutableStateFlow(GoogleUserDataModel())
+    var creds:SignInCredential? = null
 
     fun updateUserData(credentials:SignInCredential)
     {
-        userData.value = GoogleUser(credentials.displayName!!, credentials.id, credentials.profilePictureUri.toString())
+        creds = credentials
+        userData.value = GoogleUserDataModel(credentials.displayName!!, credentials.id, credentials.profilePictureUri.toString())
     }
 
     fun getDisplayName() : String
